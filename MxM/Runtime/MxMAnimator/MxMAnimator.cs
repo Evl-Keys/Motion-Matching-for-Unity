@@ -1479,6 +1479,13 @@ namespace MxM
         *********************************************************************************************/
         private void FinalizePoseSearch(int a_chosenPoseId)
         {
+            if ((uint)a_chosenPoseId >= (uint)CurrentNativeAnimData.UsedPoseIds.Length)
+            {
+                Debug.LogWarning($"MxMAnimator ({name}) - Discarding stale pose search result {a_chosenPoseId}: " +
+                    $"current anim data has {CurrentNativeAnimData.UsedPoseIds.Length} usable poses.");
+                return;
+            }
+
 #if UNITY_EDITOR
             m_lastPoseCost = m_poseCosts[a_chosenPoseId];
             m_lastTrajectoryCost = m_trajCosts[a_chosenPoseId];

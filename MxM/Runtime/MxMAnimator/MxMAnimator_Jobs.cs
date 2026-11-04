@@ -94,13 +94,18 @@ namespace MxM
 
         //============================================================================================
         /**
-        *  @brief Stops any current MxM jobs from running on this animator.
-        *         
+        *  @brief Stops any current MxM jobs from running on this animator and discards any pose
+        *  search result still waiting for MxMLateUpdate. Every caller (anim data swap, event,
+        *  idle, disable) invalidates that result: it holds an index into the previous native
+        *  anim data, so finalizing it later can read past the new data's UsedPoseIds.
+        *
         *********************************************************************************************/
         private void StopJobs()
         {
             m_poseJobHandle.Complete();
             m_trajJobHandle.Complete();
+            m_minimaJobHandle.Complete();
+            m_poseSearchThisFrame = false;
         }
 
         //============================================================================================
