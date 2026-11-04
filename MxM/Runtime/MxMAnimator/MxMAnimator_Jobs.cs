@@ -95,9 +95,9 @@ namespace MxM
         //============================================================================================
         /**
         *  @brief Stops any current MxM jobs from running on this animator and discards any pose
-        *  search result still waiting for MxMLateUpdate. Every caller (anim data swap, event,
-        *  idle, disable) invalidates that result: it holds an index into the previous native
-        *  anim data, so finalizing it later can read past the new data's UsedPoseIds.
+        *  search result still waiting for MxMLateUpdate. Only call it when that result is no longer
+        *  valid (a real anim data swap, an event, idle, disable): after a swap it holds an index
+        *  into the previous native anim data, so finalizing it could read past UsedPoseIds.
         *
         *********************************************************************************************/
         private void StopJobs()
@@ -1858,6 +1858,7 @@ namespace MxM
                                     ChosenPoseId = m_chosenPoseId
                                 };
 
+                                minimaJob.Run();
                                 return m_chosenPoseId[0];
                             }
                         case EFavourTagMethod.Inclusive:
@@ -1880,7 +1881,7 @@ namespace MxM
                             }
                         case EFavourTagMethod.Stacking:
                             {
-                                var minimaJob = new FindMinima_FavourExclusive_EnforceClipChange()
+                                var minimaJob = new FindMinima_FavourStacking_EnforceClipChange()
                                 {
                                     PoseCosts = m_poseCosts,
                                     TrajCosts = m_trajCosts,
@@ -2059,7 +2060,7 @@ namespace MxM
                             }
                         case EFavourTagMethod.Stacking:
                             {
-                                var minimaJob = new FindMinima_FavourExclusive_EnforceClipChange()
+                                var minimaJob = new FindMinima_FavourStacking_EnforceClipChange()
                                 {
                                     PoseCosts = m_poseCosts,
                                     TrajCosts = m_trajCosts,
